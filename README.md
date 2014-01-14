@@ -4,7 +4,7 @@ AsyncHttpClient
 async http client
 
 
-Sample
+Example
 ------
 ```C++
 http = HttpClient::getInstance();
