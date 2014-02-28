@@ -147,20 +147,24 @@ bool HttpClient::requestPost(
 }
 
 bool HttpClient::poll(){
-	pthread_mutex_lock( &responseMutex );
-		while( !responseQ.empty() ){
+	while( true ){
+		pthread_mutex_lock( &responseMutex );
+			if( responseQ.empty() )
+				break;
+				
 			Response *response = responseQ.front();
 			Request *request = response->getRequest();
-
+	
 			responseQ.pop();
+		pthread_mutex_unlock( &responseMutex );
+		
+		
+		request->getCallback()
+			( response->getBody() );
 
-			request->getCallback()
-				( response->getBody() );
-
-			delete response;
-			delete request;
-		}
-	pthread_mutex_unlock( &responseMutex );
-
+		delete response;
+		delete request;
+	}
+	
 	return true;
 }
