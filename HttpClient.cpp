@@ -149,8 +149,10 @@ bool HttpClient::requestPost(
 bool HttpClient::poll(){
 	while( true ){
 		pthread_mutex_lock( &responseMutex );
-			if( responseQ.empty() )
+			if( responseQ.empty() ){
+				pthread_mutex_unlock( &responseMutex );
 				break;
+			}
 				
 			Response *response = responseQ.front();
 			Request *request = response->getRequest();
